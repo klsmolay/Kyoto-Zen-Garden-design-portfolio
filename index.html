@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | The Zen Garden</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* ---
+        Design 3: "Kyoto" Zen Garden
+        - Palette: Warm off-white, charcoal, muted terracotta accent.
+        - Typography: "Lora" (serif) for headings, "Lato" (sans-serif) for body.
+        - Layout: Single-column, vertical flow.
+        - Animation: Brush stroke reveal, overlapping card stack, subtle fades.
+        - Texture: Subtle paper texture background.
+        --- */
+
+        :root {
+            --bg-color: #FBF9F6;
+            --text-color: #3D3D3D;
+            --accent-color: #C06C5D;
+            --border-color: #E0DCD5;
+            --paper-texture: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><g fill-rule="evenodd"><g fill="%23E0DCD5" fill-opacity="0.2"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            font-weight: 300;
+            background-color: var(--bg-color);
+            background-image: var(--paper-texture);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 6rem 0;
+            position: relative;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Lora', serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* --- Header --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(251, 249, 246, 1), rgba(251, 249, 246, 0));
+            z-index: 100;
+            padding: 2rem 0;
+            transition: padding 0.3s;
+        }
+        
+        .header.scrolled {
+            background: rgba(251, 249, 246, 0.9);
+            backdrop-filter: blur(5px);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .main-nav a {
+            margin: 0 1.5rem;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        
+        .main-nav a:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- Hero Section --- */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        
+        #hero h1 {
+            font-size: 5rem;
+            font-weight: 500;
+            font-style: italic;
+        }
+        
+        #hero p {
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -20px); }
+            60% { transform: translate(-50%, -10px); }
+        }
+
+        /* --- About Section --- */
+        .about-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        section.visible .section-title::after {
+            width: 100%;
+        }
+        
+        .about-content p {
+            font-size: 1.2rem;
+        }
+
+        /* --- Projects Section --- */
+        #projects {
+            padding-bottom: 10rem;
+        }
+        
+        .projects-stack {
+            position: relative;
+        }
+
+        .project-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 3rem;
+            position: sticky;
+            top: 100px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+        
+        section.visible .project-card {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .project-card:nth-child(1) { top: 100px; }
+        .project-card:nth-child(2) { top: 120px; }
+        .project-card:nth-child(3) { top: 140px; }
+
+        .project-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        
+        .project-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .project-info p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        /* --- Contact Section --- */
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            background: transparent;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--accent-color);
+        }
+        
+        .submit-btn {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.8rem 2.5rem;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-socials a {
+            margin: 0 1rem;
+            color: var(--text-color);
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-socials a:hover {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            #hero h1 { font-size: 3.5rem; }
+            .project-card { grid-template-columns: 1fr; }
+            .project-card img { order: -1; margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="#about">About</a>
+                <a href="#projects">Work</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <h1>Your Name</h1>
+                <p>Developer & Creator</p>
+            </div>
+            <a href="#about" class="scroll-down">
+                <i data-lucide="arrow-down"></i>
+            </a>
+        </section>
+
+        <section id="about" class="container">
+            <div class="about-content">
+                <h2 class="section-title">A Brief Introduction</h2>
+                <p>I am a developer focused on building thoughtful and intentional digital experiences. My work is guided by a belief in simplicity, clarity, and the power of well-crafted code to solve real-world problems. I find joy in the process of creation, from the first line of code to the final, polished product.</p>
+            </div>
+        </section>
+
+        <section id="projects" class="container">
+            <div style="text-align: center;">
+                 <h2 class="section-title">Selected Works</h2>
+            </div>
+            <div class="projects-stack">
+                <!-- Project 1 -->
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>Project Hana</h3>
+                        <p>An e-commerce experience for a boutique floral shop, focusing on a serene user journey and beautiful product presentation. Built with Vue.js and a headless CMS.</p>
+                        <a href="#" class="project-link">View Project →</a>
+                    </div>
+                    <img src="https://placehold.co/600x400/C06C5D/FBF9F6?text=Hana" alt="Project Hana">
+                </div>
+                <!-- Project 2 -->
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>Project Kumo</h3>
+                        <p>A minimalist weather application that uses data visualization to present forecasts in an intuitive, calming way. Developed with React and D3.js.</p>
+                        <a href="#" class="project-link">View Project →</a>
+                    </div>
+                    <img src="https://placehold.co/600x400/3D3D3D/FBF9F6?text=Kumo" alt="Project Kumo">
+                </div>
+                <!-- Project 3 -->
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>Project Mori</h3>
+                        <p>A digital journal and mindfulness app designed to encourage daily reflection. Features a clean, distraction-free interface and secure, local-first data storage.</p>
+                        <a href="#" class="project-link">View Project →</a>
+                    </div>
+                    <img src="https://placehold.co/600x400/E0DCD5/3D3D3D?text=Mori" alt="Project Mori">
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="container">
+            <div style="text-align: center;">
+                 <h2 class="section-title">Get In Touch</h2>
+                 <p style="max-width: 500px; margin: 0 auto 2rem;">I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious vision. Feel free to reach out.</p>
+            </div>
+            <form id="contact-form" class="contact-form">
+                <div class="form-group">
+                    <input type="text" name="user_name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="user_email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" class="submit-btn" id="submit-button">Send Message</button>
+                </div>
+                <p id="form-status" style="text-align: center; margin-top: 1rem;"></p>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-socials">
+                <a href="#"><i data-lucide="github"></i></a>
+                <a href="#"><i data-lucide="linkedin"></i></a>
+                <a href="#"><i data-lucide="twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Lucide Icons ---
+            lucide.createIcons();
+            
+            // --- Header Scroll Effect ---
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // --- Animate Sections on Scroll ---
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- Contact Form ---
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+            const submitButton = document.getElementById('submit-button');
+
+            // IMPORTANT: Replace with your EmailJS credentials
+            const serviceID = 'YOUR_SERVICE_ID';
+            const templateID = 'YOUR_TEMPLATE_ID';
+            const publicKey = 'YOUR_PUBLIC_KEY';
+
+            emailjs.init(publicKey);
+
+            contactForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+                formStatus.textContent = '';
+
+                emailjs.sendForm(serviceID, templateID, this)
+                    .then(() => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Send Message';
+                        formStatus.textContent = 'Message sent successfully!';
+                        formStatus.style.color = 'var(--accent-color)';
+                        contactForm.reset();
+                    }, (err) => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Send Message';
+                        formStatus.textContent = 'Failed to send. Please try again.';
+                        formStatus.style.color = 'red';
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
